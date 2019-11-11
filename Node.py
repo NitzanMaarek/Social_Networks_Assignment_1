@@ -9,6 +9,7 @@ class Node:
         self.neighbors_set = neighbors
         self.page_rank = -1
         self.name = name
+        self.degree = len(neighbors)
 
     def set_page_rank(self, page_rank):
         self.page_rank = page_rank
