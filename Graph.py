@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from Node import Node
 
 class Graph:
 
@@ -17,11 +18,15 @@ class Graph:
             return 'Path not found.'
         df = pd.read_csv(path, header=None)
         for index, row in df.iterrows():
-            source = row[0]
-            dest = row[1]
-            if source not in self.graph_dict.keys():
-                self.graph_dict[source] = set()        #Initializing set
-            self.graph_dict[source].add(dest)
+            source_node_name = row[0]
+            dest_node_name = row[1]
+            if source_node_name not in self.graph_dict.keys():
+                node = Node(set(), source_node_name)
+                # self.graph_dict[source] = set()        #Initializing set
+                self.graph_dict[source_node_name] = node
+            self.graph_dict[source_node_name].add_neighbor(dest_node_name)
+        self.number_of_nodes = len(self.graph_dict.keys())
+        print(self.graph_dict)
 
 if __name__ == '__main__':
     graph = Graph()

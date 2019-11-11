@@ -6,7 +6,7 @@ Each Node has it's current page rank from the last page rank calculation and a l
 class Node:
 
     def __init__(self, neighbors, name):
-        self.neighbors = neighbors
+        self.neighbors_set = neighbors
         self.page_rank = -1
         self.name = name
 
@@ -15,3 +15,6 @@ class Node:
 
     def get_page_rank(self):
         return self.page_rank
+
+    def add_neighbor(self, neighbor):
+        self.neighbors_set.add(neighbor)
