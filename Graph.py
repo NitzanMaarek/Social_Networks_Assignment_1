@@ -1,8 +1,7 @@
 import pandas as pd
 import os
 from Node import Node
-import Node
-
+from Node import Node
 class Graph:
 
     def __init__(self):
@@ -28,8 +27,6 @@ class Graph:
             self.graph_dict[source_node_name].add_neighbor(dest_node_name)
         self.number_of_nodes = len(self.graph_dict.keys())
         print(self.graph_dict)
-
-
 
     def calculate_page_rank(self, beta=0.85, delta=0.001, max_iterations=20):
         self.reset_page_rank_values()
@@ -65,3 +62,6 @@ class Graph:
 if __name__ == '__main__':
     graph = Graph()
     graph.load_graph(r'C:\Users\nitsa\Desktop\Wikipedia_votes.csv')
+    print(graph.calculate_page_rank())
+    print(graph.graph_dict['30'].get_page_rank('30'
+                                               'asdfghjkl;'))
