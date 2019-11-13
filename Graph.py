@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from Node import Node
+from heapq import heappop, heappush, heapreplace
 
 class Graph:
 
@@ -34,15 +35,13 @@ class Graph:
         self.number_of_nodes = len(self.graph_dict.keys())
         print(self.graph_dict)
 
-
-
     def calculate_page_rank(self, beta=0.85, delta=0.001, max_iterations=20):
         self.reset_page_rank_values()
         iter_delta = 1
         for i in range(20): # TODO: Check this row
             if iter_delta > delta:
                 iter_delta = self.page_rank_iteration(beta)
-                print 'iter number ' + str(i) + ' done'
+                print('iter number ' + str(i) + ' done')
             else:
                 break
 
@@ -77,8 +76,46 @@ class Graph:
     def get_page_rank(self, node_name):
         return self.graph_dict[node_name].get_page_rank()
 
+    def get_top_nodes(self, n):
+        nodes_n_heap = [] #heap
+        top_n_nodes = []
+        max_page_rank = 0
+        for key in self.graph_dict:
+            value = self.graph_dict[key]
+            if value.get_page_rank() > max_page_rank:
+                max_page_rank = value.get_page_rank()
+            page_rank_node_name_tuple = (value.get_page_rank(), key)
+            if n > 0:   # set heap size to n
+                heappush(nodes_n_heap, page_rank_node_name_tuple)
+                n -= 1
+            else:       # keep heap size to n
+                heapreplace(nodes_n_heap, page_rank_node_name_tuple)
+        self.switch_tuple_items(nodes_n_heap, top_n_nodes)
+        print("Max page rank for confirmation is: " + str(max_page_rank))
+        return top_n_nodes
+
+    def switch_tuple_items(self, nodes_heap, top_n_nodes):
+        while nodes_heap:
+            page_rank_node_name_tuple = heappop(nodes_heap)
+            node_name_to_page_rank = (page_rank_node_name_tuple[1], page_rank_node_name_tuple[0])
+            top_n_nodes.append(node_name_to_page_rank)
+
+    def get_all_page_rank(self):
+        ### NEED TO TEST THIS METHOD ###
+        page_rank_to_node_name_heap = []
+        node_name_to_page_rank = []
+        for key in self.graph_dict:
+            page_rank = self.graph_dict[key].get_page_rank()
+            page_rank_node_name = (page_rank, key)
+            heappush(page_rank_to_node_name_heap, page_rank_node_name)
+        self.switch_tuple_items(page_rank_to_node_name_heap, node_name_to_page_rank)
+        return node_name_to_page_rank
+
 if __name__ == '__main__':
     graph = Graph()
-    graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
     graph.calculate_page_rank()
-    print graph.get_page_rank(271)
+    print(graph.get_page_rank(271))
+    print(graph.get_top_nodes(10))
+    print(graph.get_all_page_rank())
