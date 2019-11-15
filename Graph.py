@@ -87,14 +87,15 @@ class Graph:
             if value.get_page_rank() > max_page_rank:
                 max_page_rank = value.get_page_rank()
             page_rank_node_name_tuple = (value.get_page_rank(), key)
-            if n > 0:   # set heap size to n
+            if n >= 0:   # set heap size to n
                 heappush(nodes_n_heap, page_rank_node_name_tuple)
                 n -= 1
             else:       # keep heap size to n
                 heapreplace(nodes_n_heap, page_rank_node_name_tuple)
+        heappop(nodes_n_heap)   # Make sure we have top n nodes, so we had n+1 in heap so we wont pop the last node.
         self.switch_tuple_items(nodes_n_heap, top_n_nodes)
         print("Max page rank for confirmation is: " + str(max_page_rank))
-        return top_n_nodes
+        return list(reversed(top_n_nodes))
 
     def switch_tuple_items(self, nodes_heap, top_n_nodes):
         while nodes_heap:
@@ -111,12 +112,12 @@ class Graph:
             page_rank_node_name = (page_rank, key)
             heappush(page_rank_to_node_name_heap, page_rank_node_name)
         self.switch_tuple_items(page_rank_to_node_name_heap, node_name_to_page_rank)
-        return node_name_to_page_rank
+        return list(reversed(node_name_to_page_rank))
 
 if __name__ == '__main__':
     graph = Graph()
-    graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
-    # graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
+    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
     graph.calculate_page_rank()
     print(graph.get_page_rank(271))
     print(graph.get_top_nodes(10))
