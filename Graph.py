@@ -32,6 +32,8 @@ class Graph:
                 node = Node(set(), dest_node_name)
                 self.graph_dict[dest_node_name] = node
 
+            self.graph_dict[dest_node_name].degree += 1
+
         self.number_of_nodes = len(self.graph_dict.keys())
         print(self.graph_dict)
 
@@ -59,7 +61,7 @@ class Graph:
             for neighbor in node.neighbors_set:
                 neighbor_node = self.graph_dict[neighbor]
                 if neighbor_node.degree != 0:
-                    new_pr += float(neighbor_node.get_page_rank) / float(neighbor_node.degree)
+                    new_pr += float(neighbor_node.get_page_rank()) / float(neighbor_node.degree)
             new_pr = new_pr * beta
             new_pr_values[node.name] = new_pr
             total_pr += new_pr
@@ -113,8 +115,8 @@ class Graph:
 
 if __name__ == '__main__':
     graph = Graph()
-    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
-    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
+    graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    # graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
     graph.calculate_page_rank()
     print(graph.get_page_rank(271))
     print(graph.get_top_nodes(10))
