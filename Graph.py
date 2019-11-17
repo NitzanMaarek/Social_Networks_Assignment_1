@@ -7,7 +7,8 @@ class Graph:
 
     def __init__(self):
         self.number_of_nodes = 0
-        self.graph_dict = {}
+        self.graph_dict = {}        # key = node_name, value = node object.
+        self.node_name_to_pointing_nodes = {}   # key = node_name
 
     def load_graph(self, path):
         """
@@ -121,4 +122,12 @@ if __name__ == '__main__':
     graph.calculate_page_rank()
     print(graph.get_page_rank(271))
     print(graph.get_top_nodes(10))
-    print(graph.get_all_page_rank())
+    all_page_ranks = graph.get_all_page_rank()
+    print(all_page_ranks)
+
+    ### SUM ALL PAGE RANKS TO SEE IF SUMS TO 1 ###
+    sum = 0
+    for page_rank in all_page_ranks:
+        sum += page_rank[1]
+    print(sum)
+
