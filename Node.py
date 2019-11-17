@@ -5,8 +5,8 @@ Each Node has it's current page rank from the last page rank calculation and a l
 
 class Node:
 
-    def __init__(self, neighbors, name):
-        self.neighbors_set = neighbors
+    def __init__(self, name):
+        self.neighbors_set = set()
         self.page_rank = -1
         self.name = name
         # self.degree = len(neighbors)

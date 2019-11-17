@@ -22,14 +22,14 @@ class Graph:
             source_node_name = row[0]
             dest_node_name = row[1]
             if source_node_name not in self.graph_dict.keys():
-                node = Node(set(), source_node_name)
+                node = Node(source_node_name)
                 # self.graph_dict[source] = set()        #Initializing set
                 self.graph_dict[source_node_name] = node
             self.graph_dict[source_node_name].add_neighbor(dest_node_name)
 
             # We must add nodes which have only in edges because their might be dead ends in the graph
             if dest_node_name not in self.graph_dict.keys():
-                node = Node(set(), dest_node_name)
+                node = Node(dest_node_name)
                 self.graph_dict[dest_node_name] = node
 
             self.graph_dict[dest_node_name].degree += 1
@@ -40,7 +40,7 @@ class Graph:
     def calculate_page_rank(self, beta=0.85, delta=0.001, max_iterations=20):
         self.reset_page_rank_values()
         iter_delta = 1
-        for i in range(20): # TODO: Check this row
+        for i in range(max_iterations):
             if iter_delta > delta:
                 iter_delta = self.page_rank_iteration(beta)
                 print('iter number ' + str(i) + ' done')
@@ -57,21 +57,26 @@ class Graph:
         total_delta = 0
         total_pr = 0
         for node_name, node in self.graph_dict.items():
-            new_pr = 0
-            for neighbor in node.neighbors_set:
-                neighbor_node = self.graph_dict[neighbor]
-                if neighbor_node.degree != 0:
-                    new_pr += float(neighbor_node.get_page_rank()) / float(neighbor_node.degree)
-            new_pr = new_pr * beta
-            new_pr_values[node.name] = new_pr
-            total_pr += new_pr
-            total_delta += abs(node.get_page_rank() - new_pr)
+            if len(node.neighbors_set) > 0:
+                added_pr_value = (float(node.page_rank) / float(len(node.neighbors_set))) * beta
+                for neighbor in node.neighbors_set:
+                    neighbor_node = self.graph_dict[neighbor]
+                    if neighbor_node.name not in new_pr_values.keys():
+                        new_pr_values[neighbor_node.name] = 0
+                    new_pr_values[neighbor_node.name] += added_pr_value
+                    total_pr += added_pr_value
 
         leak_value = float(1 - total_pr) / self.number_of_nodes
 
         for node_name, node in self.graph_dict.items():
-            new_pr_no_leak = new_pr_values[node.name] + leak_value
-            node.set_page_rank(new_pr_no_leak)
+            if node_name in new_pr_values.keys():
+                new_pr_added_leak = new_pr_values[node.name] + leak_value
+            else:
+                new_pr_added_leak = leak_value
+            total_delta += abs(new_pr_added_leak - node.page_rank)
+            node.set_page_rank(new_pr_added_leak)
+
+
 
         return total_delta
 
@@ -116,9 +121,13 @@ class Graph:
 
 if __name__ == '__main__':
     graph = Graph()
-    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
-    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
+    graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    # graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
     graph.calculate_page_rank()
-    print(graph.get_page_rank(271))
-    print(graph.get_top_nodes(10))
-    print(graph.get_all_page_rank())
+    # print(graph.get_page_rank(271))
+    print(graph.get_top_nodes(20))
+    # print(graph.get_all_page_rank())
+    s = 0
+    for node_name, node in graph.graph_dict.items():
+        s += node.get_page_rank()
+    print s
