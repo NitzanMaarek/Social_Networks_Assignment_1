@@ -146,4 +146,3 @@ if __name__ == '__main__':
         s += node.get_page_rank()
 
 
-    
