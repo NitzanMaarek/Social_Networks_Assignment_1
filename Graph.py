@@ -130,4 +130,4 @@ if __name__ == '__main__':
     s = 0
     for node_name, node in graph.graph_dict.items():
         s += node.get_page_rank()
-    print s
+    print(s)
