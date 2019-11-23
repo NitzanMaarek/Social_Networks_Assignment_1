@@ -8,6 +8,7 @@ class Graph:
     def __init__(self):
         self.number_of_nodes = 0
         self.graph_dict = {}
+        self.number_of_edges = 0
 
     def load_graph(self, path):
         """
@@ -21,6 +22,7 @@ class Graph:
         for index, row in df.iterrows():
             source_node_name = row[0]
             dest_node_name = row[1]
+            self.number_of_edges += 1
             if source_node_name not in self.graph_dict.keys():
                 node = Node(source_node_name)
                 # self.graph_dict[source] = set()        #Initializing set
@@ -75,15 +77,18 @@ class Graph:
                 new_pr_added_leak = leak_value
             total_delta += abs(new_pr_added_leak - node.page_rank)
             node.set_page_rank(new_pr_added_leak)
-
-
-
         return total_delta
 
     def get_page_rank(self, node_name):
         return self.graph_dict[node_name].get_page_rank()
 
     def get_top_nodes(self, n):
+        """
+        Method calculates the top n nodes according to their page rank.
+        Sorting the top n nodes is done using max-heap.
+        :param n: Integer - represents number of nodes to return.
+        :return: List of tuples (node_name, page_rank).
+        """
         nodes_n_heap = [] #heap
         top_n_nodes = []
         max_page_rank = 0
@@ -103,13 +108,20 @@ class Graph:
         return list(reversed(top_n_nodes))
 
     def switch_tuple_items(self, nodes_heap, top_n_nodes):
+        """
+        Method switches tuples items order: (x,y) to (y,x).
+        """
         while nodes_heap:
             page_rank_node_name_tuple = heappop(nodes_heap)
             node_name_to_page_rank = (page_rank_node_name_tuple[1], page_rank_node_name_tuple[0])
             top_n_nodes.append(node_name_to_page_rank)
 
     def get_all_page_rank(self):
-        ### NEED TO TEST THIS METHOD ###
+        """
+        Method calculates all page ranks.
+        Sorts the nodes according to page rank: highest page rank first.
+        :return: List of tuples (node_name, page_rank).
+        """
         page_rank_to_node_name_heap = []
         node_name_to_page_rank = []
         for key in self.graph_dict:
@@ -121,13 +133,17 @@ class Graph:
 
 if __name__ == '__main__':
     graph = Graph()
-    graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
-    # graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
+    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
+    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
     graph.calculate_page_rank()
     # print(graph.get_page_rank(271))
-    print(graph.get_top_nodes(20))
+    print(graph.get_top_nodes(10))
     # print(graph.get_all_page_rank())
+    print("number of edges is: " + str(graph.number_of_edges))
+    print("number of nodes is: " + str(graph.number_of_nodes))
     s = 0
     for node_name, node in graph.graph_dict.items():
         s += node.get_page_rank()
-    print s
+
+
+    
