@@ -145,4 +145,5 @@ if __name__ == '__main__':
     for node_name, node in graph.graph_dict.items():
         s += node.get_page_rank()
 
-
+    df = pd.DataFrame(graph.graph_dict.keys())
+    df.to_csv('nodes.csv', index=False)
