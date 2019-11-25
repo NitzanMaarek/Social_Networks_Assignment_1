@@ -37,7 +37,7 @@ class Graph:
             self.graph_dict[dest_node_name].degree += 1
 
         self.number_of_nodes = len(self.graph_dict.keys())
-        print(self.graph_dict)
+        # print(self.graph_dict)
 
     def calculate_page_rank(self, beta=0.85, delta=0.001, max_iterations=20):
         self.reset_page_rank_values()
@@ -45,7 +45,7 @@ class Graph:
         for i in range(max_iterations):
             if iter_delta > delta:
                 iter_delta = self.page_rank_iteration(beta)
-                print('iter number ' + str(i) + ' done')
+                # print('iter number ' + str(i) + ' done')
             else:
                 break
 
@@ -132,18 +132,22 @@ class Graph:
         return list(reversed(node_name_to_page_rank))
 
 if __name__ == '__main__':
-    graph = Graph()
-    # graph.load_graph(r'C:\Chen\BGU\2020\2020 - A\Social Networks Analysis\Assignments\Social_Networks_Assignment_1\Wikipedia_votes.csv')
-    graph.load_graph(r"C:\Users\nitsa\Desktop\Wikipedia_votes.csv")
-    graph.calculate_page_rank()
-    # print(graph.get_page_rank(271))
-    print(graph.get_top_nodes(10))
-    # print(graph.get_all_page_rank())
-    print("number of edges is: " + str(graph.number_of_edges))
-    print("number of nodes is: " + str(graph.number_of_nodes))
-    s = 0
-    for node_name, node in graph.graph_dict.items():
-        s += node.get_page_rank()
-
-    df = pd.DataFrame(graph.graph_dict.keys())
-    df.to_csv('nodes.csv', index=False)
+    print("************Wikipedia votes graph: Wikipedia_votes.csv************")
+    wikepdia_votes_graph = Graph()
+    wikepdia_votes_graph.load_graph(r'Wikipedia_votes.csv')
+    wikepdia_votes_graph.calculate_page_rank()
+    print("Page rank of node 271: " + str(wikepdia_votes_graph.get_page_rank(271)))
+    print("Top 10 nodes:        " + str(wikepdia_votes_graph.get_top_nodes(10)))
+    print("All page ranks:      " + str(wikepdia_votes_graph.get_all_page_rank()))
+    print("number of edges is:  " + str(wikepdia_votes_graph.number_of_edges))
+    print("number of nodes is:  " + str(wikepdia_votes_graph.number_of_nodes))
+    print("\n")
+    print("************Retweets graph: rt-twitter-copen.csv************")
+    retweets_graph = Graph()
+    retweets_graph.load_graph(r'rt-twitter-copen.csv')
+    retweets_graph.calculate_page_rank()
+    print("Page rank of node 271: " + str(retweets_graph.get_page_rank(271)))
+    print("Top 10 nodes:        " + str(retweets_graph.get_top_nodes(10)))
+    print("All page ranks:      " + str(retweets_graph.get_all_page_rank()))
+    print("number of edges is:  " + str(retweets_graph.number_of_edges))
+    print("number of nodes is:  " + str(retweets_graph.number_of_nodes))
